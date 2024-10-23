@@ -50,6 +50,10 @@ function buyGLDToken(uint256 _amountOfToken) public payable {
 }
 
 function calculateTokenPrice(uint _amountOfToken) public {
+    require(_amountOfToken>0,"Amount of Token Should Be Greater Than 0");
+    adjustTokenPriceBasedOnDemand();
+    uint amountToPay = _amountOfToken.mul(tokenPrice).div(1e18);
+
     
 }
 
