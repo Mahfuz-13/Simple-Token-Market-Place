@@ -25,8 +25,8 @@ event EtherWithdrawn(address indexed owner, uint256 amount);
 event CalculateTokenPrice(uint256 priceToPay);
 
 
-constructor(address _gldToken)Ownable(msg.sender){
-  gldToken = IERC20(_gldToken);
+constructor(address _gldToken) Ownable(msg.sender) {
+    gldToken = IERC20(_gldToken);
 }
 
 
@@ -36,7 +36,11 @@ function adjustTokenPriceBasedOnDemand() public {
     uint smoothingFactor = 1e18;
     uint adjustedRatio = marketDemandRatio.add(smoothingFactor).div(2);
     uint newTokenPrice =  tokenPrice.mul(adjustedRatio).div(1e18);
-
+    uint minimumPrice = 2e16;
+    if (newTokenPrice<minimumPrice){
+        tokenPrice = minimumPrice;
+    }
+    tokenPrice = newTokenPrice;
    
 }
 
