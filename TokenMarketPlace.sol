@@ -14,6 +14,8 @@ using SafeMath for uint256;
 uint256 public tokenPrice = 2e16 wei; // 0.02 ether per GLD token
 uint256 public sellerCount = 1;
 uint256 public buyerCount=1;
+uint public prevAdjustedRatio;
+
 
 IERC20 public gldToken;
 
@@ -32,16 +34,18 @@ constructor(address _gldToken) Ownable(msg.sender) {
 
 // Updated logic for token price calculation with safeguards
 function adjustTokenPriceBasedOnDemand() public {
-    uint marketDemandRatio = buyerCount.mul(1e18).div(sellerCount); 
-    uint smoothingFactor = 1e18;
-    uint adjustedRatio = marketDemandRatio.add(smoothingFactor).div(2);
+   uint marketDemandRatio = buyerCount.mul(1e18).div(sellerCount); 
+   uint smoothingFactor = 1e18;
+   uint adjustedRatio = marketDemandRatio.add(smoothingFactor).div(2);
+   if(prevAdjustedRatio!=adjustedRatio){
+    prevAdjustedRatio=adjustedRatio;
     uint newTokenPrice =  tokenPrice.mul(adjustedRatio).div(1e18);
     uint minimumPrice = 2e16;
-    if (newTokenPrice<minimumPrice){
+    if(newTokenPrice<minimumPrice){
         tokenPrice = minimumPrice;
     }
     tokenPrice = newTokenPrice;
-   
+   }
 }
 
 // Buy tokens from the marketplace
